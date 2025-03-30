@@ -187,7 +187,9 @@ class BookController extends Controller implements HasMiddleware
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            return response()->json($books);
+            return response()->json([
+                'books' => $books
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Internal server error'], 500);
         }
