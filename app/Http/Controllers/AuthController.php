@@ -42,7 +42,7 @@ class AuthController extends Controller
         }
         $token = $user->createToken($user->username);
         return response()->json([
-            'message' => 'Resource created successfully!',
+            'message' => 'Logged in successfully!',
             'user' => $user,
             'token' => $token->plainTextToken
         ], 200);

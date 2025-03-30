@@ -39,8 +39,7 @@ class BookController extends Controller implements HasMiddleware
             'title' => ['required', 'string', 'max:255'],
             'caption' => ['required'],
             'rating' => ['required'],
-            'image' => ['nullable'],
-            'imageDataUrl' => ['required', 'string', new Base64Image()],
+            'image' => ['required', 'string', new Base64Image()],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -102,8 +101,7 @@ class BookController extends Controller implements HasMiddleware
             'title' => ['required', 'string', 'max:255'],
             'caption' => ['required'],
             'rating' => ['required'],
-            'image' => ['nullable'],
-            'imageDataUrl' => ['required', 'string', new Base64Image()],
+            'image' =>  ['required', 'string', new Base64Image()],
         ]);
 
         if ($validator->fails()) {
@@ -163,5 +161,18 @@ class BookController extends Controller implements HasMiddleware
         }
         $book->delete();
         return response()->json(['message' => 'The Book was deleted'], 200);
+    }
+    public function user(Request $request)
+    {
+        try {
+            $user = $request->user(); // Get authenticated user
+            $books = Book::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json($books);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Internal server error'], 500);
+        }
     }
 }
