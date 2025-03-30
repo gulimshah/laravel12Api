@@ -178,6 +178,7 @@ class BookController extends Controller implements HasMiddleware
         $book->delete();
         return response()->json(['message' => 'The Book was deleted'], 200);
     }
+
     public function userBooks(Request $request)
     {
         try {
