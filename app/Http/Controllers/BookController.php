@@ -63,8 +63,8 @@ class BookController extends Controller implements HasMiddleware
                 'errors' => $validator->errors(),
             ], 422);
         }
-        if ($request->has('imageDataUrl')) {
-            [$metaData, $imageData] = explode(',', $request->imageDataUrl, 2);
+        if ($request->has('image')) {
+            [$metaData, $imageData] = explode(',', $request->image, 2);
             $imageType = str_replace(['data:image/', ';base64'], '', $metaData);
             $decodedImage = base64_decode($imageData);
             if ($decodedImage !== false) {
@@ -126,8 +126,8 @@ class BookController extends Controller implements HasMiddleware
                 'errors' => $validator->errors(),
             ], 422);
         }
-        if ($request->has('imageDataUrl')) {
-            [$metaData, $imageData] = explode(',', $request->imageDataUrl, 2);
+        if ($request->has('image')) {
+            [$metaData, $imageData] = explode(',', $request->image, 2);
             $imageType = str_replace(['data:image/', ';base64'], '', $metaData);
             $decodedImage = base64_decode($imageData);
             if ($decodedImage !== false) {
