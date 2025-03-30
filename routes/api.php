@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('books/user', [BookController::class, 'userBooks'])->middleware('auth:sanctum');
+Route::get('books/user', [BookController::class, 'userBooks'])->middleware('auth:sanctum');
 
 Route::apiResource('books', BookController::class);
 
