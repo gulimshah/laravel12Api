@@ -24,10 +24,26 @@ class BookController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Book::with('user')->latest()->get();
-        // return Post::all();
+        $page = $request->query('page', 1);
+        $limit = $request->query('limit', 5);
+        $skip = ($page - 1) * $limit;
+
+        $books = Book::with(['user:id,username,profileImage'])
+            ->orderBy('created_at', 'desc')
+            ->skip($skip)
+            ->take($limit)
+            ->get();
+
+        $totalBook = Book::count();
+
+        return response()->json([
+            'books' => $books,
+            'currentPage' => (int) $page,
+            'totalBook' => $totalBook,
+            'totalPages' => ceil($totalBook / $limit),
+        ]);
     }
 
     /**
