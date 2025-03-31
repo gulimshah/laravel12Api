@@ -27,6 +27,7 @@ class AuthController extends Controller
         $user = User::create($validatedData);
         $token = $user->createToken($request->username);
         return response()->json([
+            'success' => true,
             'message' => 'Resource created successfully!',
             'user' => $user,
             'token' => $token->plainTextToken
