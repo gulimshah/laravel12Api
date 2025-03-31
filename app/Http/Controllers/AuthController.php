@@ -5,19 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $fields = $request->validate([
-            'username' => 'required|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required'
+        $validator = Validator::make($request->all(), [
+            'username' => ['required', 'string', 'max:30'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:5']
         ]);
 
-        $user = User::create($fields);
-
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        $validatedData = $validator->validated();
+        $user = User::create($validatedData);
         $token = $user->createToken($request->username);
         return response()->json([
             'message' => 'Resource created successfully!',
@@ -34,7 +41,6 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'The provided credentials are incorrect.',
