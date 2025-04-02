@@ -15,6 +15,6 @@ class BookPolicy
     {
         return $user->id === $book->user_id
             ? Response::allow()
-            : Response::deny('You do not own this book');
+            : Response::deny('You are not authorized as you do not own this!');
     }
 }
