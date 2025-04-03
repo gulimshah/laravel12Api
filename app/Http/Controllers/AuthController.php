@@ -96,12 +96,11 @@ class AuthController extends Controller
         }
     }
 
-
-
     public function resetPassword(Request $request)
     {
+        dd($request->all());
         $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'token' => 'required|digits:6', // Ensure it's a 6-digit code
             'password' => 'required|min:6|confirmed',
         ]);
