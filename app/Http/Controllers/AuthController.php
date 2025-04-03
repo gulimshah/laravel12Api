@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordMail; // Create a custom mail class
 
 class AuthController extends Controller
 {
@@ -68,13 +72,23 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        $status = Password::sendResetLink($request->only('email'));
-
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json(['message' => 'Reset link sent to your email'], 200);
+        // Check if email exists
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'Email not found'], 400);
         }
 
-        return response()->json(['error' => 'Unable to send reset link'], 400);
+        // Generate Token
+        $token = Str::random(60);
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $request->email],
+            ['token' => $token, 'created_at' => now()]
+        );
+
+        // Send Email Synchronously (NO QUEUE)
+        Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
+
+        return response()->json(['message' => 'Reset link sent successfully'], 200);
     }
 
 
