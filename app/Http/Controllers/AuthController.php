@@ -68,26 +68,28 @@ class AuthController extends Controller
             'message' => 'You are logout successfully!',
         ], 200);
     }
+
     public function forgetPass(Request $request)
     {
         $request->validate(['email' => 'required|email']);
 
         $user = User::where('email', $request->email)->first();
-
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $token = Str::random(60);
+        // Generate a 6-digit code instead of a long hashed token
+        $verificationCode = rand(100000, 999999);
+
+        // Store code in password_resets table
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $request->email],
-            ['token' => $token, 'created_at' => now()]
+            ['token' => $verificationCode, 'created_at' => now()]
         );
 
         try {
             // Send email synchronously (without queuing)
-            Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
-
+            Mail::to($request->email)->send(new ResetPasswordMail($verificationCode, $request->email));
             return response()->json(['message' => 'Reset link sent to your email'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Unable to send reset link', 'error' => $e->getMessage()], 500);
@@ -95,25 +97,33 @@ class AuthController extends Controller
     }
 
 
+
     public function resetPassword(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
-            'token' => 'required',
+            'token' => 'required|digits:6', // Ensure it's a 6-digit code
             'password' => 'required|min:6|confirmed',
         ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => bcrypt($password)
-                ])->save();
-            }
-        );
+        // Check if the token is valid
+        $resetEntry = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
 
-        return $status === Password::PASSWORD_RESET
-            ? response()->json(['message' => 'Password reset successful'], 200)
-            : response()->json(['message' => 'Invalid token'], 400);
+        if (!$resetEntry) {
+            return response()->json(['message' => 'Invalid token'], 400);
+        }
+        // Reset password
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $user->password = bcrypt($request->password);
+        $user->save();
+        // Delete the token after use
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        return response()->json(['message' => 'Password reset successful'], 200);
     }
 }
