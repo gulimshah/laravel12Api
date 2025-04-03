@@ -70,10 +70,13 @@ class AuthController extends Controller
 
         $status = Password::sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => 'Reset link sent to your email'], 200)
-            : response()->json(['message' => 'Unable to send reset link'], 400);
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => 'Reset link sent to your email'], 200);
+        }
+
+        return response()->json(['error' => 'Unable to send reset link'], 400);
     }
+
 
     public function resetPassword(Request $request)
     {

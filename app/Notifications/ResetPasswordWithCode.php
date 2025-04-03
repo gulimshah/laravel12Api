@@ -22,7 +22,7 @@ class ResetPasswordWithCode extends ResetPassword
             ->subject('Reset Password')
             ->line('Use the below verification code to reset your password:')
             ->line('**Verification Code: ' . $this->verificationCode . '**')
-            ->action('Reset Password', url('auth/resetPassword' . $this->token . '?email=' . $notifiable->email))
+            //->action('Reset Password', url('auth/resetPassword' . $this->token . '?email=' . $notifiable->email))
             ->line('If you did not request this, please ignore this email.');
     }
 }
