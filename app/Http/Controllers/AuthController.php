@@ -72,23 +72,26 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        // Check if email exists
         $user = User::where('email', $request->email)->first();
+
         if (!$user) {
-            return response()->json(['message' => 'Email not found'], 400);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Generate Token
         $token = Str::random(60);
-        DB::table('password_reset_tokens')->updateOrInsert(
+        DB::table('password_resets')->updateOrInsert(
             ['email' => $request->email],
             ['token' => $token, 'created_at' => now()]
         );
 
-        // Send Email Synchronously (NO QUEUE)
-        Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
+        try {
+            // Send email synchronously (without queuing)
+            Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
 
-        return response()->json(['message' => 'Reset link sent successfully'], 200);
+            return response()->json(['message' => 'Reset link sent to your email'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Unable to send reset link', 'error' => $e->getMessage()], 500);
+        }
     }
 
 
