@@ -98,13 +98,18 @@ class AuthController extends Controller
 
     public function resetPassword(Request $request)
     {
-        dd($request->all());
-        $request->validate([
-            'email' => 'required|email',
-            'token' => 'required|digits:6', // Ensure it's a 6-digit code
-            'password' => 'required|min:6|confirmed',
+        $validator = Validator::make($request->all(), [
+            'token' => ['required', 'digits:6'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:6', 'confirmed']
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
         // Check if the token is valid
         $resetEntry = DB::table('password_reset_tokens')
             ->where('email', $request->email)
