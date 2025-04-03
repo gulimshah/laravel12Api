@@ -101,7 +101,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required',
             'token' => 'required|digits:6', // Ensure it's a 6-digit code
             'password' => 'required|min:6|confirmed',
         ]);
