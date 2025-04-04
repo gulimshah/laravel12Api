@@ -57,10 +57,10 @@ class DaroodCounterController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'counts' => ['required', 'Number']
+            'counts' => ['required', 'numeric']
         ], [
             'counts.required' => 'Please enter Darood Counts, It is mandatory!',
-            'counts.Number' => 'Please enter counting!'
+            'counts.numeric' => 'Please enter counting!'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -99,10 +99,10 @@ class DaroodCounterController extends Controller
     {
         Gate::authorize('modify', $count);
         $validator = Validator::make($request->all(), [
-            'counts' => ['required', 'Number']
+            'counts' => ['required', 'numeric']
         ], [
             'counts.required' => 'Please enter Darood Counts, It is mandatory!',
-            'counts.Number' => 'Please enter counting!'
+            'counts.numeric' => 'Please enter counting!'
         ]);
 
         if ($validator->fails()) {
