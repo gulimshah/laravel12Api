@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('counts');
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->boolean('isActive')->default(true);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
