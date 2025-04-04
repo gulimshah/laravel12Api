@@ -68,7 +68,7 @@ class DaroodCounterController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        $counts = $request->user()->counts()->create([
+        $counts = $request->user()->daroodCounts()->create([
             'counts' => $request->counts,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
