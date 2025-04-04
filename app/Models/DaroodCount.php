@@ -7,6 +7,7 @@ use App\Models\User;
 
 class DaroodCount extends Model
 {
+    protected $table = 'darood_count';
     protected $fillable = [
         'counts',
         'date',
