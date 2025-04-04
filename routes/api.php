@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/daroodCount', [DaroodCounterController:
 Route::middleware('auth:sanctum')->post('/daroodCount/store', [DaroodCounterController::class, 'store']);
 Route::middleware('auth:sanctum')->put('/daroodCount/{count}', [DaroodCounterController::class, 'update']);
 Route::middleware('auth:sanctum')->delete('/daroodCount/{count}', [DaroodCounterController::class, 'destroy']);
+Route::middleware('auth:sanctum')->get('/daroodCount/{count}', [DaroodCounterController::class, 'show']);
 
 
 Route::apiResource('books', BookController::class);
