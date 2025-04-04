@@ -22,11 +22,12 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->get('/books/user', [BookController::class, 'userBooks']);
+
 Route::middleware('auth:sanctum')->get('/daroodCount/user', [DaroodCounterController::class, 'userCounts']);
 Route::middleware('auth:sanctum')->get('/daroodCount', [DaroodCounterController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/daroodCount/store', [DaroodCounterController::class, 'store']);
-Route::middleware('auth:sanctum')->put('/daroodCount/count', [DaroodCounterController::class, 'update']);
-Route::middleware('auth:sanctum')->delete('/daroodCount/count', [DaroodCounterController::class, 'destroy']);
+Route::middleware('auth:sanctum')->put('/daroodCount/{count}', [DaroodCounterController::class, 'update']);
+Route::middleware('auth:sanctum')->delete('/daroodCount/{count}', [DaroodCounterController::class, 'destroy']);
 
 
 Route::apiResource('books', BookController::class);
