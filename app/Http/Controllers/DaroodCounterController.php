@@ -23,9 +23,9 @@ class DaroodCounterController extends Controller
     public function index(Request $request)
     {
 
-        $totalDailyCounts = DaroodCount::whereDate('created_at', Carbon::today())->count();
-        $totalMonthlyCounts = DaroodCount::whereMonth('created_at', Carbon::now()->month())->count();
-        $totalYearlyCounts = DaroodCount::whereYear('created_at', Carbon::now()->year())->count();
+        $totalDailyCounts = DaroodCount::whereDate('created_at', Carbon::today())->where('isActive', true)->count();
+        $totalMonthlyCounts = DaroodCount::whereMonth('created_at', Carbon::now()->month())->where('isActive', true)->count();
+        $totalYearlyCounts = DaroodCount::whereYear('created_at', Carbon::now()->year())->where('isActive', true)->count();
 
         return response()->json([
             'totalDailyCounts' => (int) $totalDailyCounts,
