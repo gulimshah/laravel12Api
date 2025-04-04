@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Book;
+use App\Models\DaroodCount;
 use App\Notifications\ResetPasswordWithCode;
 
 class User extends Authenticatable
@@ -52,6 +53,11 @@ class User extends Authenticatable
     public function books()
     {
         return $this->hasMany(Book::class);
+    }
+
+    public function daroodCounts()
+    {
+        return $this->hasMany(DaroodCount::class);
     }
 
     public function sendPasswordResetNotification($token)
