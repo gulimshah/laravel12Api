@@ -30,7 +30,7 @@ class DaroodCounterController extends Controller
         return response()->json([
             'totalDailyCounts' => (int) $totalDailyCounts,
             'totalMonthlyCounts' => (int) $totalMonthlyCounts,
-            'totalYearlyCounts' => $totalYearlyCounts,
+            'totalYearlyCounts' => (int) $totalYearlyCounts,
         ], 200);
     }
 
