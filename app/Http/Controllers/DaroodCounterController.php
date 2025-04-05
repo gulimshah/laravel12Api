@@ -24,8 +24,8 @@ class DaroodCounterController extends Controller
     {
 
         $totalDailyCounts = DaroodCount::whereDate('created_at', Carbon::today())->where('isActive', 1)->sum('counts');
-        $totalMonthlyCounts = DaroodCount::whereMonth('created_at', Carbon::now()->month())->where('isActive', 1)->sum('counts');
-        $totalYearlyCounts = DaroodCount::whereYear('created_at', Carbon::now()->year())->where('isActive', 1)->sum('counts');
+        $totalMonthlyCounts = DaroodCount::whereMonth('created_at', now()->month)->where('isActive', 1)->sum('counts');
+        $totalYearlyCounts = DaroodCount::whereYear('created_at', now()->year)->where('isActive', 1)->sum('counts');
 
         return response()->json([
             'totalDailyCounts' => (int) $totalDailyCounts,
@@ -40,8 +40,8 @@ class DaroodCounterController extends Controller
     public function userCounts(Request $request)
     {
         $totalDailyCounts = DaroodCount::where('user_id', $request->user()->id)->whereDate('created_at', Carbon::today())->where('isActive', 1)->sum('counts');
-        $totalMonthlyCounts = DaroodCount::where('user_id', $request->user()->id)->whereMonth('created_at', Carbon::now()->month())->where('isActive', 1)->sum('counts');
-        $totalYearlyCounts = DaroodCount::where('user_id', $request->user()->id)->whereYear('created_at', Carbon::now()->year())->where('isActive', 1)->sum('counts');
+        $totalMonthlyCounts = DaroodCount::where('user_id', $request->user()->id)->whereMonth('created_at', now()->month)->where('isActive', 1)->sum('counts');
+        $totalYearlyCounts = DaroodCount::where('user_id', $request->user()->id)->whereYear('created_at', now()->year)->where('isActive', 1)->sum('counts');
 
         return response()->json([
             'totalDailyCounts' => (int) $totalDailyCounts,
