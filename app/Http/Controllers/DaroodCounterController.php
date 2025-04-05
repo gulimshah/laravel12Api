@@ -67,16 +67,38 @@ class DaroodCounterController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        $counts = $request->user()->daroodCounts()->create([
-            'counts' => $request->counts,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-        return response()->json([
-            'message' => 'Your Darood Counts Addes successfully!',
-            'counts' => $counts,
-            'user' => $counts->user,
-        ], 201);
+        $user = $request->user();
+        $today = Carbon::today();
+        // Check if today's entry exists
+        $existing = $user->daroodCounts()
+            ->whereDate('created_at', $today)
+            ->first();
+
+        if ($existing) {
+            //Add to existing count
+            $existing->update([
+                'counts' => $existing->counts + $request->counts,
+                'updated_at' => Carbon::now()
+            ]);
+            return response()->json([
+                'message' => 'Your Darood Count for today has been updated!',
+                'counts' => $existing,
+                'user' => $user,
+            ]);
+        } else {
+            // Create new record
+            $counts = $user->daroodCounts()->create([
+                'counts' => $request->counts,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            return response()->json([
+                'message' => 'Your Darood Count has been added successfully!',
+                'counts' => $counts,
+                'user' => $user,
+            ], 201);
+        }
     }
 
     /**
